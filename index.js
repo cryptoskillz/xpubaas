@@ -52,7 +52,6 @@ async function retunXpub(req, res, next) {
     /* 
     TODO
 
-    update 49 and 84 code to use the looper etc and normalise these functions 
     */
 
     //check to see if they are passing in a network
@@ -106,7 +105,6 @@ async function retunXpub(req, res, next) {
         //get a random number between the start address and the number of addresses and set it to the start address so the check new address check loop works
         _startAddress = Math.floor(Math.random() * (_numberOfAddresses - _startAddress + 1) + _startAddress)
     }
-
 
     //get the node
     const node = bip32.fromBase58(req.params.xpub, _network)
