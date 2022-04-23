@@ -1,5 +1,5 @@
 # xpubaas
-generate a Bitcoin address from an xpub address from a REST API
+generate a Bitcoin address from an xpub address using a REST API
 
 
 Using this simple REST API to generate a bitcoin address from an xpub makes it easy to integrate into e-commerce gateways etc.  And yes I know it is Xpub is 
