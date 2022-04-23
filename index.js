@@ -52,8 +52,7 @@ async function retunXpub(req, res, next) {
     /* 
     TODO
 
-    pass a paramater to get  random address
-
+    update 49 and 84 code to use the looper etc and normalise these functions 
     */
 
     //check to see if they are passing in a network
@@ -78,14 +77,11 @@ async function retunXpub(req, res, next) {
         _bipType = req.params.biptype
     }
 
-
     //check if there is a new addres check flag
     let _newAddressCheck = newAddressCheck;
     if ((req.params.newaddresscheck != undefined) && (req.params.newaddresscheck != "")) {
         _newAddressCheck = req.params.newaddresscheck
     }
-
-
 
     //check if there is a new addres check flag
     let _startAddress = startAddress;
@@ -100,12 +96,17 @@ async function retunXpub(req, res, next) {
     }
 
     //check if there is a random address
-
     let _randomAddress = randomAddress
     if ((req.params.randomaddress != undefined) && (req.params.randomaddress != "")) {
         _randomAddress = parseInt(req.params.randomaddress)
     }
 
+    //check if we want a random number
+    if (_randomAddress == 1)
+    {
+        //get a random number between the start address and the number of addresses and set it to the start address so the check new address check loop works
+        _startAddress = Math.floor(Math.random() * (_numberOfAddresses - _startAddress + 1) + _startAddress)
+    }
 
 
     //get the node
@@ -117,6 +118,8 @@ async function retunXpub(req, res, next) {
     //console.log(_newAddressCheck)
     //console.log(_startAddress)
     //console.log(_numberOfAddresses)
+
+    //todo : get a random number between  startaddress and number of address and check if its free in the loop. 
   
     //check the user has not done something dumb
     if (_startAddress >=  _numberOfAddresses)
@@ -124,7 +127,8 @@ async function retunXpub(req, res, next) {
         res.send({ "error": "Start address is > number of addresses" });
         return;
     }     
-    
+
+        
     //get the bip type
     switch (_bipType) {
         case "44":
