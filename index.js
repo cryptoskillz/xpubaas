@@ -130,6 +130,7 @@ async function retunXpub(req, res, next) {
 
         
     //get the bip type
+    //note: replace the switch type and have one piece of code and an if at the bitcoin.payments part
     switch (_bipType) {
         case "44":
             //check if we want a new balance
