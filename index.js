@@ -102,8 +102,7 @@ async function retunXpub(req, res, next) {
     }
 
     //check if we want a random number
-    if (_randomAddress == 1)
-    {
+    if (_randomAddress == 1) {
         //get a random number between the start address and the number of addresses and set it to the start address so the check new address check loop works
         _startAddress = Math.floor(Math.random() * (_numberOfAddresses - _startAddress + 1) + _startAddress)
     }
@@ -118,62 +117,58 @@ async function retunXpub(req, res, next) {
     //console.log(_newAddressCheck)
     //console.log(_startAddress)
     //console.log(_numberOfAddresses)
+    //console.log(_address)
+    //console.log(_balance)
 
-    //todo : get a random number between  startaddress and number of address and check if its free in the loop. 
-  
     //check the user has not done something dumb
-    if (_startAddress >=  _numberOfAddresses)
-    {
+    if (_startAddress >= _numberOfAddresses) {
         res.send({ "error": "Start address is > number of addresses" });
         return;
-    }     
-
-        
-    //get the bip type
-    //note: replace the switch type and have one piece of code and an if at the bitcoin.payments part
-    switch (_bipType) {
-        case "44":
-            //check if we want a new balance
-            if (_newAddressCheck == 1) {
-                //loop a 1000 address
-                for (i = _startAddress; i <= _numberOfAddresses; i++) {
-                    //get an address
-                    _address = bitcoin.payments.p2pkh({ pubkey: node.derive(0).derive(i).publicKey }).address;
-                    //get the current balance
-                    _balance = await fetchBalace(_address);
-                    //debug
-                    //console.log(_address)
-                    //console.log(_balance)
-                    //check if its free or we have been blocked
-                    if ((_balance == "n/a") || (_balance == 0)) {
-                        //set the address count
-                        _addressCount = i;
-                        break
-                    }
-                    await sleep(1000);
-
-                }
-            } else {
-                //we dont care if it is been used or not
-                _address = bitcoin.payments.p2pkh({ pubkey: node.derive(0).derive(_startAddress).publicKey }).address;
-                //note: We do not really need to do this  as we do not care about the price as we are going to potentially 
-                //      resuse the address but it costs us very little so why not
-                _balance = await fetchBalace(_address);
-                //this is always going to be the startaddress passed or defaulted to 0
-                _addressCount =  _startAddress;
-            }
-            break;
-        case "49":
-            _address = bitcoin.payments.p2sh({ redeem: bitcoin.payments.p2wpkh({ pubkey: node.derive(0).derive(0).publicKey }), }).address;
-            break;
-        case "84":
-            _address = bitcoin.payments.p2wpkh({ pubkey: node.derive(0).derive(0).publicKey }).address;
-        default:
-            // code block
     }
+
+    if (_newAddressCheck == 1) {
+        //loop a 1000 address
+        for (i = _startAddress; i <= _numberOfAddresses; i++) {
+            //get an address
+            if (_bipType == "44")
+                _address = bitcoin.payments.p2pkh({ pubkey: node.derive(0).derive(i).publicKey }).address;
+            if (_bipType == "49")
+                _address = bitcoin.payments.p2sh({ redeem: bitcoin.payments.p2wpkh({ pubkey: node.derive(0).derive(i).publicKey }), }).address;
+            if (_bipType == "84")
+                _address = bitcoin.payments.p2wpkh({ pubkey: node.derive(0).derive(i).publicKey }).address;
+            //get the current balance
+            _balance = await fetchBalace(_address);
+            //debug
+            //console.log(_address)
+            //console.log(_balance)
+            //check if its free or we have been blocked
+            if ((_balance == "n/a") || (_balance == 0)) {
+                //set the address count
+                _addressCount = i;
+                break
+            }
+            await sleep(1000);
+
+        }
+    } else {
+        //we dont care if it is been used or not
+        if (_bipType == "44")
+            _address = bitcoin.payments.p2pkh({ pubkey: node.derive(0).derive(_startAddress).publicKey }).address;
+        if (_bipType == "49")
+            _address = bitcoin.payments.p2sh({ redeem: bitcoin.payments.p2wpkh({ pubkey: node.derive(0).derive(_startAddress).publicKey }), }).address;
+        if (_bipType == "84")
+            _address = bitcoin.payments.p2wpkh({ pubkey: node.derive(0).derive(_startAddress).publicKey }).address;
+        //get the current balance
+        //note: We do not really need to do this  as we do not care about the price as we are going to potentially 
+        //      resuse the address but it costs us very little so why not
+        _balance = await fetchBalace(_address);
+        //this is always going to be the startaddress passed or defaulted to 0
+        _addressCount = _startAddress;
+    }
+
     //return it
     //note we could hide the balance paramter if you newaddresscheck = 0;
-    res.send({ "address": _address, "balance": _balance,"derive":_addressCount });
+    res.send({ "address": _address, "balance": _balance, "derive": _addressCount });
     next();
 }
 
