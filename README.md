@@ -16,5 +16,11 @@ paramater 3 = 44,49,84 (address type)
 ## todo
 
 return the first clean (balance of 0)
+
 return a random address
+
 return an array of addresses
+
+endpoint to show the state of an address
+
+
