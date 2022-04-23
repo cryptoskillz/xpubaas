@@ -73,7 +73,7 @@ async function retunXpub(req, res, next) {
     let _bipType = bipType;
     if ((req.params.biptype != undefined) && (req.params.biptype != "")) {
         //note we could check if it is one of the accepted types
-        _bipType = req.params.biptype
+        _bipType = parseInt(req.params.biptype)
     }
 
     //check if there is a new addres check flag
@@ -128,11 +128,11 @@ async function retunXpub(req, res, next) {
         //loop a 1000 address
         for (i = _startAddress; i <= _numberOfAddresses; i++) {
             //get an address
-            if (_bipType == "44")
+            if (_bipType == 44)
                 _address = bitcoin.payments.p2pkh({ pubkey: node.derive(0).derive(i).publicKey }).address;
-            if (_bipType == "49")
+            if (_bipType == 49)
                 _address = bitcoin.payments.p2sh({ redeem: bitcoin.payments.p2wpkh({ pubkey: node.derive(0).derive(i).publicKey }), }).address;
-            if (_bipType == "84")
+            if (_bipType == 84)
                 _address = bitcoin.payments.p2wpkh({ pubkey: node.derive(0).derive(i).publicKey }).address;
             //get the current balance
             _balance = await fetchBalace(_address);
@@ -150,11 +150,11 @@ async function retunXpub(req, res, next) {
         }
     } else {
         //we dont care if it is been used or not
-        if (_bipType == "44")
+        if (_bipType == 44)
             _address = bitcoin.payments.p2pkh({ pubkey: node.derive(0).derive(_startAddress).publicKey }).address;
-        if (_bipType == "49")
+        if (_bipType == 49)
             _address = bitcoin.payments.p2sh({ redeem: bitcoin.payments.p2wpkh({ pubkey: node.derive(0).derive(_startAddress).publicKey }), }).address;
-        if (_bipType == "84")
+        if (_bipType == 84)
             _address = bitcoin.payments.p2wpkh({ pubkey: node.derive(0).derive(_startAddress).publicKey }).address;
         //get the current balance
         //note: We do not really need to do this  as we do not care about the price as we are going to potentially 
