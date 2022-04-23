@@ -62,6 +62,8 @@ async function retunXpub(req, res, next) {
     let _address = "";
     //inter btc balance
     let _balance = 0;
+    //found address  count
+    let _addressCount = 0;
     //check if they passed in a network
     if ((req.params.network != undefined) && (req.params.network != "")) {
         //check if they switched to the testnet
@@ -139,6 +141,8 @@ async function retunXpub(req, res, next) {
                     //console.log(_balance)
                     //check if its free or we have been blocked
                     if ((_balance == "n/a") || (_balance == 0)) {
+                        //set the address count
+                        _addressCount = i;
                         break
                     }
                     await sleep(1000);
@@ -150,6 +154,8 @@ async function retunXpub(req, res, next) {
                 //note: We do not really need to do this  as we do not care about the price as we are going to potentially 
                 //      resuse the address but it costs us very little so why not
                 _balance = await fetchBalace(_address);
+                //this is always going to be the startaddress passed or defaulted to 0
+                _addressCount =  _startAddress;
             }
             break;
         case "49":
@@ -162,14 +168,14 @@ async function retunXpub(req, res, next) {
     }
     //return it
     //note we could hide the balance paramter if you newaddresscheck = 0;
-    res.send({ "address": _address, "balance": _balance });
+    res.send({ "address": _address, "balance": _balance,"derive":_addressCount });
     next();
 }
 
 var server = restify.createServer({ maxParamLength: 500 });
 server.use(restify.plugins.queryParser());
-server.get('/xpub/:xpub/:network/:biptype/:newaddresscheck/:startaddress/:numberofaddresses/', retunXpub);
-server.head('/xpub/:xpub/:network/:biptype/:newaddresscheck/:startaddress/:numberofaddresses/', retunXpub);
+server.get('/xpub/:xpub/:network/:biptype/:newaddresscheck/:startaddress/:numberofaddresses/:randomaddress/', retunXpub);
+server.head('/xpub/:xpub/:network/:biptype/:newaddresscheck/:startaddress/:numberofaddresses/:randomaddress/', retunXpub);
 
 server.listen(PORT, function() {
     console.log('%s listening at %s', server.name, server.url);
