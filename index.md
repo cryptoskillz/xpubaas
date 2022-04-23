@@ -1,37 +1,20 @@
-## Welcome to GitHub Pages
+# xpubaas
+generate a Bitcoin address from an xpub address from a REST API
 
-You can use the [editor on GitHub](https://github.com/cryptoskillz/xpubaas/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+Using this simple REST API to generate a bitcoin address from an xpub makes it easy to integrate into e-commerce gateways etc.  And yes I know it is Xpub is 
+not secure, I do not want to hear it.
 
-### Markdown
+## usage
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+http://127.0.0.1:5001/xpub/xpub6CatWdiZiodmUeTDp8LT5or8nmbKNcuyvz7WyksVFkKB4RHwCD3XyuvPEbvqAQY3rAPshWcMLoP2fMFMKHPJ4ZeZXYVUhLv1VMrjPC7PW6V/bitcoin/84/
 
-```markdown
-Syntax highlighted code block
+paramter 1 = xpub key
+paramter 2 = bitcoin / testnet (network)
+paramater 3 = 44,49,84 (address type)
 
-# Header 1
-## Header 2
-### Header 3
+## todo
 
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
-```
-
-For more details see [Basic writing and formatting syntax](https://docs.github.com/en/github/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax).
-
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/cryptoskillz/xpubaas/settings/pages). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.
+return the first clean (balance of 0)
+return a random address
+return an array of addresses
