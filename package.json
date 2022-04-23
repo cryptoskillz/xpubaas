@@ -13,6 +13,10 @@
     "bitcoinjs-lib": "^6.0.1",
     "btc-xpub-address": "^0.2.0",
     "ecpair": "^2.0.1",
+    "fetch": "^1.1.0",
+    "iconv": "^3.0.1",
+    "node-fetch": "^3.2.3",
+    "request": "^2.88.2",
     "restify": "^8.6.1"
   }
 }
