@@ -1,3 +1,13 @@
+/*
+TODO
+
+add a check balance endpoint 
+check the address format is correct based on the network
+return an array of addresses
+endpoint to show the state of an address
+
+*/
+
 const http = require("http");
 const PORT = process.env.PORT || 5001;
 
@@ -17,7 +27,6 @@ const numberOfAddresses = 1000
 const randomAddress = 0;
 var request = require('request');
 var iconv = require('iconv');
-
 var ic = new iconv.Iconv('iso-8859-1', 'utf-8');
 
 function fetchBalace(address) {
@@ -28,6 +37,7 @@ function fetchBalace(address) {
                 of other software that interfaces with a full node much better than this program ever wil.
 
                 If you would like to replace this with your own node then I suggest you use getumrel or cyphernode
+
 
         */
         //call block chain info
@@ -53,13 +63,6 @@ let resMessage = (res,message) =>{
 }
 
 async function retunXpub(req, res, next) {
-    /* 
-    TODO
-
-    check the address format is correct based on the network
-
-    */
-
     //check to see if they are passing in a network
     let _network = bitcoin.networks.bitcoin;
     //internal btc address
