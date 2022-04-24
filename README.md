@@ -21,11 +21,9 @@ paramater 5 = start address defaults to 0
 
 paramater 6 = max number of addresses to check defaults to 1000
 
-paramater 7 = 0 / 1 boolean (get a random address) currently only works if paramater 4 is set to 0
+paramater 7 = 0 / 1 boolean (get a random address between paramter 5 and 6 if paramater 4 is 1 then it will use this as the start for the loop) 
 
 ## todo
-
-return a random address
 
 return an array of addresses
 
