@@ -48,9 +48,15 @@ function fetchBalace(address) {
     });
 }
 
+let resMessage = (res,message) =>{
+    res.send(message);
+}
+
 async function retunXpub(req, res, next) {
     /* 
     TODO
+
+    check the address format is correct based on the network
 
     */
 
@@ -62,42 +68,57 @@ async function retunXpub(req, res, next) {
     let _balance = 0;
     //found address  count
     let _addressCount = 0;
+    let _node;
+
     //check if they passed in a network
-    if ((req.params.network != undefined) && (req.params.network != "")) {
+    if (req.query.network != undefined) 
+    {
         //check if they switched to the testnet
-        if (req.params.network == "testnet")
+        if (req.query.network == "testnet")
             _network = bitcoin.networks.testnet
+    }
+
+    //check  for  a xpub
+    if (req.query.xpub !=  undefined)
+    {
+        //get the node
+        _node = bip32.fromBase58(req.query.xpub, _network)
+    }
+    else
+    {
+        resMessage(res,{ "error": "Xpub required" });
+        return;
     }
 
     //check if there is a bip type specified
     let _bipType = bipType;
-    if ((req.params.biptype != undefined) && (req.params.biptype != "")) {
+    if (req.query.biptype != undefined)  {
         //note we could check if it is one of the accepted types
-        _bipType = parseInt(req.params.biptype)
+        _bipType = parseInt(req.query.biptype)
     }
 
     //check if there is a new addres check flag
     let _newAddressCheck = newAddressCheck;
-    if ((req.params.newaddresscheck != undefined) && (req.params.newaddresscheck != "")) {
-        _newAddressCheck = req.params.newaddresscheck
+    if (req.query.newaddresscheck != undefined) {
+        _newAddressCheck = req.query.newaddresscheck
     }
 
     //check if there is a new addres check flag
     let _startAddress = startAddress;
-    if ((req.params.startaddress != undefined) && (req.params.startaddress != "")) {
-        _startAddress = parseInt(req.params.startaddress)
+    if (req.query.startaddress != undefined)  {
+        _startAddress = parseInt(req.query.startaddress)
     }
 
     //check if there is a number of addresses flag
     let _numberOfAddresses = numberOfAddresses
-    if ((req.params.numberofaddresses != undefined) && (req.params.numberofaddresses != "")) {
-        _numberOfAddresses = parseInt(req.params.numberofaddresses)
+    if (req.query.numberofaddresses != undefined)  {
+        _numberOfAddresses = parseInt(req.query.numberofaddresses)
     }
 
     //check if there is a random address
     let _randomAddress = randomAddress
-    if ((req.params.randomaddress != undefined) && (req.params.randomaddress != "")) {
-        _randomAddress = parseInt(req.params.randomaddress)
+    if (req.query.randomaddress != undefined)  {
+        _randomAddress = parseInt(req.query.randomaddress)
     }
 
     //check if we want a random number
@@ -106,8 +127,7 @@ async function retunXpub(req, res, next) {
         _startAddress = Math.floor(Math.random() * (_numberOfAddresses - _startAddress + 1) + _startAddress)
     }
 
-    //get the node
-    const node = bip32.fromBase58(req.params.xpub, _network)
+    
     //debug
     //console.log(req.params)
     //console.log(_bipType)
@@ -120,7 +140,7 @@ async function retunXpub(req, res, next) {
 
     //check the user has not done something dumb
     if (_startAddress >= _numberOfAddresses) {
-        res.send({ "error": "Start address is > number of addresses" });
+        resMessage(res,{"error":"Start address is > number of addresses" });
         return;
     }
 
@@ -129,11 +149,11 @@ async function retunXpub(req, res, next) {
         for (i = _startAddress; i <= _numberOfAddresses; i++) {
             //get an address
             if (_bipType == 44)
-                _address = bitcoin.payments.p2pkh({ pubkey: node.derive(0).derive(i).publicKey }).address;
+                _address = bitcoin.payments.p2pkh({ pubkey: _node.derive(0).derive(i).publicKey }).address;
             if (_bipType == 49)
-                _address = bitcoin.payments.p2sh({ redeem: bitcoin.payments.p2wpkh({ pubkey: node.derive(0).derive(i).publicKey }), }).address;
+                _address = bitcoin.payments.p2sh({ redeem: bitcoin.payments.p2wpkh({ pubkey: _node.derive(0).derive(i).publicKey }), }).address;
             if (_bipType == 84)
-                _address = bitcoin.payments.p2wpkh({ pubkey: node.derive(0).derive(i).publicKey }).address;
+                _address = bitcoin.payments.p2wpkh({ pubkey: _node.derive(0).derive(i).publicKey }).address;
             //get the current balance
             _balance = await fetchBalace(_address);
             //debug
@@ -151,11 +171,11 @@ async function retunXpub(req, res, next) {
     } else {
         //we dont care if it is been used or not
         if (_bipType == 44)
-            _address = bitcoin.payments.p2pkh({ pubkey: node.derive(0).derive(_startAddress).publicKey }).address;
+            _address = bitcoin.payments.p2pkh({ pubkey: _node.derive(0).derive(_startAddress).publicKey }).address;
         if (_bipType == 49)
-            _address = bitcoin.payments.p2sh({ redeem: bitcoin.payments.p2wpkh({ pubkey: node.derive(0).derive(_startAddress).publicKey }), }).address;
+            _address = bitcoin.payments.p2sh({ redeem: bitcoin.payments.p2wpkh({ pubkey: _node.derive(0).derive(_startAddress).publicKey }), }).address;
         if (_bipType == 84)
-            _address = bitcoin.payments.p2wpkh({ pubkey: node.derive(0).derive(_startAddress).publicKey }).address;
+            _address = bitcoin.payments.p2wpkh({ pubkey: _node.derive(0).derive(_startAddress).publicKey }).address;
         //get the current balance
         //note: We do not really need to do this  as we do not care about the price as we are going to potentially 
         //      resuse the address but it costs us very little so why not
@@ -166,14 +186,17 @@ async function retunXpub(req, res, next) {
 
     //return it
     //note we could hide the balance paramter if you newaddresscheck = 0;
-    res.send({ "address": _address, "balance": _balance, "derive": _addressCount });
+    resMessage(res,{ "address": _address, "balance": _balance, "derive": _addressCount });
     next();
 }
 
 var server = restify.createServer({ maxParamLength: 500 });
 server.use(restify.plugins.queryParser());
-server.get('/xpub/:xpub/:network/:biptype/:newaddresscheck/:startaddress/:numberofaddresses/:randomaddress/', retunXpub);
-server.head('/xpub/:xpub/:network/:biptype/:newaddresscheck/:startaddress/:numberofaddresses/:randomaddress/', retunXpub);
+
+//server.get('/xpub/:xpub/:network/:biptype/:newaddresscheck/:startaddress/:numberofaddresses/:randomaddress/', retunXpub);
+//server.head('/xpub/:xpub/:network/:biptype/:newaddresscheck/:startaddress/:numberofaddresses/:randomaddress/', retunXpub);
+server.get('/xpub/', retunXpub);
+server.head('/xpub/', retunXpub);
 
 server.listen(PORT, function() {
     console.log('%s listening at %s', server.name, server.url);
