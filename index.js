@@ -193,10 +193,10 @@ async function retunXpub(req, res, next) {
 var server = restify.createServer({ maxParamLength: 500 });
 server.use(restify.plugins.queryParser());
 
-//server.get('/xpub/:xpub/:network/:biptype/:newaddresscheck/:startaddress/:numberofaddresses/:randomaddress/', retunXpub);
-//server.head('/xpub/:xpub/:network/:biptype/:newaddresscheck/:startaddress/:numberofaddresses/:randomaddress/', retunXpub);
 server.get('/xpub/', retunXpub);
 server.head('/xpub/', retunXpub);
+server.get('/xpub', retunXpub);
+server.head('/xpub', retunXpub);
 
 server.listen(PORT, function() {
     console.log('%s listening at %s', server.name, server.url);
