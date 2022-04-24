@@ -5,6 +5,10 @@ generate a Bitcoin address from an xpub address using a REST API
 Using this simple REST API to generate a bitcoin address from an xpub makes it easy to integrate into e-commerce gateways etc.  And yes I know it is Xpub is 
 not secure, I do not want to hear it.
 
+## demo
+
+https://xpubaas.herokuapp.com/xpub/?xpub=xpub6CatWdiZiodmUeTDp8LT5or8nmbKNcuyvz7WyksVFkKB4RHwCD3XyuvPEbvqAQY3rAPshWcMLoP2fMFMKHPJ4ZeZXYVUhLv1VMrjPC7PW6V&network=ffff&biptype=84&newaddresscheck=1&startaddress=0&numberofaddresses=10&randomaddress=0
+
 ## usage
 
 http://127.0.0.1:5001/xpub/?xpub=xpub6CatWdiZiodmUeTDp8LT5or8nmbKNcuyvz7WyksVFkKB4RHwCD3XyuvPEbvqAQY3rAPshWcMLoP2fMFMKHPJ4ZeZXYVUhLv1VMrjPC7PW6V&network=ffff&biptype=84&newaddresscheck=1&startaddress=0&numberofaddresses=10&randomaddress=1
