@@ -4,8 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
   },
+
   "author": "",
   "license": "0BSD",
   "dependencies": {
@@ -19,4 +21,5 @@
     "request": "^2.88.2",
     "restify": "^8.6.1"
   }
+
 }
