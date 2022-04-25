@@ -5,6 +5,27 @@ add a check balance endpoint
 check the address format is correct based on the network
 return an array of addresses
 endpoint to show the state of an address
+conert balance to a float
+zpub/ypub convertor etc
+
+
+
+Help
+
+https://github.com/peli-pro/coldcard_address_generator/blob/master/coldcard_address_generator_node.js
+https://github.com/jlopp/xpub-converter/blob/master/js/xpubConvert.js
+
+Useful API calls
+
+
+https://blockchain.info/balance?active=bc1qcr8te4kr609gcawutmrza0j4xv80jy8z306fyu
+https://blockchain.info/unspent?active=bc1qcr8te4kr609gcawutmrza0j4xv80jy8z306fyu
+https://blockchain.info/rawaddr/bc1qcr8te4kr609gcawutmrza0j4xv80jy8z306fyu/
+https://blockchain.info/q/addressbalance/bc1qcr8te4kr609gcawutmrza0j4xv80jy8z306fyu/
+
+
+
+
 
 */
 
@@ -38,7 +59,6 @@ function fetchBalace(address) {
 
                 If you would like to replace this with your own node then I suggest you use getumrel or cyphernode
 
-
         */
         //call block chain info
         request.get({ url: "https://blockchain.info/q/addressbalance/" + address, encoding: null, }, function(error, res, body) {
@@ -56,6 +76,12 @@ function fetchBalace(address) {
 
         });
     });
+}
+
+let sleep =  (ms) =>{
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
 }
 
 let resMessage = (res,message) =>{
@@ -168,6 +194,7 @@ async function retunXpub(req, res, next) {
                 _addressCount = i;
                 break
             }
+            //
             await sleep(1000);
 
         }
