@@ -88,7 +88,7 @@ let resMessage = (res,message) =>{
     res.send(message);
 }
 
-async function retunXpub(req, res, next) {
+async function returnXpub(req, res, next) {
     //check to see if they are passing in a network
     let _network = bitcoin.networks.bitcoin;
     //internal btc address
@@ -223,10 +223,10 @@ async function retunXpub(req, res, next) {
 var server = restify.createServer({ maxParamLength: 500 });
 server.use(restify.plugins.queryParser());
 
-server.get('/xpub/', retunXpub);
-server.head('/xpub/', retunXpub);
-server.get('/xpub', retunXpub);
-server.head('/xpub', retunXpub);
+server.get('/xpub/', returnXpub);
+server.head('/xpub/', returnXpub);
+server.get('/xpub', returnXpub);
+server.head('/xpub', returnXpub);
 
 server.listen(PORT, function() {
     console.log('%s listening at %s', server.name, server.url);
